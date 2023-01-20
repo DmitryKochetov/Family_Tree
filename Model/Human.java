@@ -1,10 +1,10 @@
+package DZ1.Model;
 
-package DZ1;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Human {
+public class Human implements Serializable, Comparable<Human> {
     private String name;
     private String gender;
     private Human father;
@@ -14,25 +14,12 @@ public class Human {
 
     private List<Human> children = new ArrayList<>();
 
-    public List<Human> getChildren() {
-        return children;
+    public Human() {
     }
 
-    public void setChildren(List<Human> children) {
-        this.children = children;
-    }
-
-    public Human(String name, String gender, Human father, Human mother, Human brotherOrSister) {
+    public Human(String name, String gender) {
         this.name = name;
         this.gender = gender;
-        this.father = father;
-        this.mother = mother;
-        father.children.add(this);
-        mother.children.add(this);
-        brotherOrSister.brothersOrSisters.add(this);
-        this.brothersOrSisters.add(brotherOrSister);
-        // System.out.println(brotherOrSister);
-
     }
 
     public Human(String name, String gender, Human father, Human mother) {
@@ -40,14 +27,8 @@ public class Human {
         this.gender = gender;
         this.father = father;
         this.mother = mother;
-        // this.children = new ArrayList<>();
-        father.children.add(this);
-        mother.children.add(this);
-    }
-
-    public Human(String name, String gender) {
-        this.name = name;
-        this.gender = gender;
+        addNewbornToParents(father, mother);
+        addBrotherOrSister(this, mother, father);
     }
 
     public String getName() {
@@ -98,9 +79,39 @@ public class Human {
         this.brothersOrSisters = brothersOrSisters;
     }
 
+    public List<Human> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<Human> children) {
+        this.children = children;
+    }
+
+    public void addBrotherOrSister(Human newborn, Human mother, Human father) {
+        if (father.children.size() > 1) {
+            for (Human human : father.children) {
+                if (human != newborn) {
+                    newborn.brothersOrSisters.add(human);
+                    human.brothersOrSisters.add(newborn);
+                }
+            }
+        }
+
+    }
+
+    public void addNewbornToParents(Human father, Human mother) {
+        father.children.add(this);
+        mother.children.add(this);
+
+    }
+
     @Override
     public String toString() {
-        return name; // + " Пол: " + gender + " Мать: " + mother + " Отец: " + father + "; \n";
+        return name;
+    }
+
+    @Override
+    public int compareTo(Human o) {
+        return name.compareTo(o.getName());
     }
 }
-
